@@ -1,5 +1,4 @@
 package com.frigga.knowledgebase.controller;
-
 import com.frigga.knowledgebase.dto.*;
 import com.frigga.knowledgebase.model.User;
 import com.frigga.knowledgebase.repository.UserRepository;
@@ -37,10 +36,25 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
         Optional<User> userOpt = userRepository.findByEmail(request.getEmail());
-        if (userOpt.isPresent() && passwordEncoder.matches(request.getPassword(), userOpt.get().getPassword())) {
+         System.out.println("User Found: " + userOpt.isPresent());
+
+    if (userOpt.isPresent()) {
+        String dbPassword = userOpt.get().getPassword();
+        System.out.println("Password from DB: " + dbPassword);
+
+        boolean matches = passwordEncoder.matches(request.getPassword(), dbPassword);
+        System.out.println("Password Match Result: " + matches);
+
+        if (matches) {
             String token = jwtUtil.generateToken(userOpt.get().getId());
             return ResponseEntity.ok(new AuthResponse(token));
+        } else {
+            System.out.println("Password Mismatch.");
         }
+    } else {
+        System.out.println("User Not Found in DB.");
+    }
+
         return ResponseEntity.status(401).body("Invalid credentials");
     }
 }
