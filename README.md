@@ -34,3 +34,11 @@ A scalable, secure backend service for a Knowledge Base system that allows users
 
 ## ✅ Project Structure
 
+src/main/java/com/frigga/knowledgebase/
+├── controller
+├── service
+├── repository
+├── model
+├── dto
+├── security
+├── config
